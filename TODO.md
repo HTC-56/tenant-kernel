@@ -55,7 +55,7 @@ build that and nothing else.
   throw, publishes all three settings, drops to `app_user`, rejects a bad id.
   Spec: §B5. Gate: typecheck + test + scrub.
 
-- [ ] **§B6** Write `src/db/identity.ts` — four functions over a `Queryable`,
+- [x] **§B6** Write `src/db/identity.ts` — four functions over a `Queryable`,
   none of them naming a tenant — plus `test/identity-layer.test.ts`.
   Spec: §B6. Gate: typecheck + test + scrub.
 
