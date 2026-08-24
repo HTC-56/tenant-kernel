@@ -43,7 +43,7 @@ by the planning lane — do not rebuild them. These tasks prove them and add the
 thin typed data layer. Grep your section header in TASK_PHASE_B.md, read it,
 build that and nothing else.
 
-- [ ] **§B3** Write `test/identity-rls.test.ts`: cross-tenant refusal and
+- [x] **§B3** Write `test/identity-rls.test.ts`: cross-tenant refusal and
   role-gated writes on the identity tables. Mirror `test/rls-refusal.test.ts`.
   Spec: TASK_PHASE_B.md §B3. Gate: typecheck + test + scrub.
 
