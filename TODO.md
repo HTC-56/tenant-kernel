@@ -59,7 +59,7 @@ build that and nothing else.
   none of them naming a tenant — plus `test/identity-layer.test.ts`.
   Spec: §B6. Gate: typecheck + test + scrub.
 
-- [ ] **§B7** Write `test/seam-only.test.ts`: scan `src/` and assert only the
+- [x] **§B7** Write `test/seam-only.test.ts`: scan `src/` and assert only the
   seam opens transactions, sets the role, or publishes `app.*` settings.
   Spec: §B7. Gate: typecheck + test + scrub.
 
