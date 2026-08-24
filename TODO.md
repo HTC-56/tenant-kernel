@@ -32,6 +32,6 @@ header in TASK_PHASE_A.md, read it, build that and nothing else.
   README-quickstart lint (every `pnpm`/`bash` command in the README resolves).
   Spec: §A9. Gate: `bash verify.sh` exits 0.
 
-- [ ] **§A10** Close Phase A: append a Phase A section to STATUS.md and flip the
+- [x] **§A10** Close Phase A: append a Phase A section to STATUS.md and flip the
   ROADMAP.md rows this phase shipped. Spec: §A10. Gate: `bash verify.sh` green
   first, then commit both docs.
