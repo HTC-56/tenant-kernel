@@ -23,3 +23,14 @@ What is not yet proven locally: the real-Postgres run. The dev box has no
 reachable Postgres, so CI's `postgres:16` service-container job carries it.
 
 What is next: the request seam (`withTenant`), users/memberships/invites.
+
+## Phase B — the context seam
+
+Phase B shipped `sql/0002_identity.sql`, `src/db/seam.ts`, `src/db/identity.ts`,
+and six new test files. The seam commits transactions, rolls back on a throw,
+drops to `app_user` and publishes all three settings. A tenant sees only its
+own people. Membership and invite writes need an `admin` or `owner` role. A
+table granted to `app_user` without RLS now fails the build.
+
+What is next: tenant lifecycle (provision, invite/accept, role change,
+suspend/resume) and seat-cap enforcement.

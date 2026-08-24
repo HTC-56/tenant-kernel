@@ -42,6 +42,13 @@ sees nothing. See `sql/0001_tenancy_core.sql` for the schema and
 - `test/` — assertion suite including RLS refusal and coverage tests
 - `scripts/` — `scrub-check.sh` for public-repo linting
 
+## Identity and roles
+
+Users are global and become visible to a tenant only through a membership.
+Membership and invite writes require `app.role` of `owner` or `admin`.
+Entitlements are read-only to tenants. See `sql/0002_identity.sql` for the
+schema and `test/identity-rls.test.ts` for the role-gated policy proofs.
+
 ## Status
 
 v1 is in progress. See [ROADMAP.md](ROADMAP.md).

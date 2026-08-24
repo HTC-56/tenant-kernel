@@ -63,6 +63,6 @@ build that and nothing else.
   seam opens transactions, sets the role, or publishes `app.*` settings.
   Spec: §B7. Gate: typecheck + test + scrub.
 
-- [ ] **§B8** Close Phase B: append a README section on identity and roles, a
+- [x] **§B8** Close Phase B: append a README section on identity and roles, a
   STATUS.md Phase B section, and bring the ROADMAP.md rows and reservations
   ledger current. Spec: §B8. Gate: `bash verify.sh` green first.

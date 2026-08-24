@@ -6,9 +6,9 @@ are the one permitted exception to append-only docs.
 | # | Feature (SPEC.md) | Status | Phase | Note |
 |---|---|---|---|---|
 | 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A, B | tenants + projects in A; users, memberships, invites and entitlement flags in B |
-| 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6 |
-| 3 | The context seam (withTenant, SET LOCAL) | PARTIAL | B | `withTenant()` publishes all three settings and drops to app_user; session-token → user → active-tenant resolution and the Fastify plugin remain |
-| 4 | Tenant lifecycle + entitlements | PARTIAL | B | entitlement flags table and role-gated membership/invite policies shipped; provision, invite/accept, role change, suspend/resume remain |
+| 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6; grants-based coverage check (`test/rls-grants.test.ts`) landed in B |
+| 3 | The context seam (withTenant, SET LOCAL) | PARTIAL | B | `withTenant()` and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
+| 4 | Tenant lifecycle + entitlements | PARTIAL | B | role-gated policies proven by `test/identity-rls.test.ts`; lifecycle operations still remain |
 | 5 | Audited operator access | NOT BUILT | — | |
 | 6 | Tenant-scoped surface (projects CRUD) | NOT BUILT | — | |
 | 7 | Ops surface (/healthz, /metrics, ledger, auth) | NOT BUILT | — | |
@@ -41,3 +41,7 @@ planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
   PUBLIC grant. Driving real cross-tenant CRUD against every discovered table
   is reserved for the phase that adds the second tenant-scoped table.
   Home: `TASK_PHASE_A.md` §A6.
+- **Seat-cap enforcement deferred (Phase B).** The `entitlements.seat_cap` column
+  ships with no trigger enforcing it, because the operator write path that would
+  set it does not exist yet; the lifecycle phase enforces it. Home:
+  `TASK_PHASE_B.md` §B1.
