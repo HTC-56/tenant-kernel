@@ -12,7 +12,7 @@ The engine adapter, migrator, first migration and the nine-assertion refusal
 proof are already committed. These tasks close the phase. Grep your section
 header in TASK_PHASE_A.md, read it, build that and nothing else.
 
-- [ ] **§A5** Write `scripts/scrub-check.sh`: public-repo scrubber over
+- [x] |- **§A5** Write `scripts/scrub-check.sh`: public-repo scrubber over
   `git ls-files` only — home paths, LAN IPs, key material, private hostnames.
   Spec: TASK_PHASE_A.md §A5. Gate: it exits 0, plus `pnpm typecheck` + `pnpm test`.
 
