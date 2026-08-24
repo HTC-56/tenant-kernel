@@ -47,7 +47,7 @@ build that and nothing else.
   role-gated writes on the identity tables. Mirror `test/rls-refusal.test.ts`.
   Spec: TASK_PHASE_B.md §B3. Gate: typecheck + test + scrub.
 
-- [ ] **§B4** Write `test/rls-grants.test.ts`: every table granted to `app_user`
+- [x] **§B4** Write `test/rls-grants.test.ts`: every table granted to `app_user`
   must have ENABLE+FORCE RLS and a policy — catches global tables like `users`.
   Mirror `test/rls-coverage.test.ts`. Spec: §B4. Gate: typecheck + test + scrub.
 
