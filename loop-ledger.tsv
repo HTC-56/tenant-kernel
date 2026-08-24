@@ -13,3 +13,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-24T17:43:17	loop	qwen	commit	64	11675	27	4	507	- [ ] **§B5** Write `test/seam.test.ts`: `withTenant` commits, rolls back on a
 2026-08-24T18:02:23	loop	qwen	no-op	103	29775	42	13	1146	- [ ] **§B6** Write `src/db/identity.ts` — four functions over a `Queryable`,
 2026-08-24T18:09:47	loop	qwen	commit	121	33711	49	14	443	- [ ] **§B7** Write `test/seam-only.test.ts`: scan `src/` and assert only the
+2026-08-24T18:23:36	loop	qwen	commit	106	17242	44	11	829	- [ ] **§B8** Close Phase B: append a README section on identity and roles, a
