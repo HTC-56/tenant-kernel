@@ -2,3 +2,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-24T15:53:19	plan	claude	commit	56	107182	24	0	514	plan next phase
 2026-08-24T16:05:49	loop	qwen	commit	62	20332	23	5	782	- [ ] **§A5** Write `scripts/scrub-check.sh`: public-repo scrubber over
 2026-08-24T16:15:43	loop	qwen	commit	112	29707	43	8	594	- [ ] **§A6** Write `test/rls-coverage.test.ts`: discover tenant-scoped tables
+2026-08-24T16:25:24	loop	qwen	commit	90	14772	34	5	581	- [ ] **§A7** Write `.github/workflows/ci.yml`: two jobs running identical steps
