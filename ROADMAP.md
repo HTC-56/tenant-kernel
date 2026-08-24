@@ -5,8 +5,8 @@ are the one permitted exception to append-only docs.
 
 | # | Feature (SPEC.md) | Status | Phase | Note |
 |---|---|---|---|---|
-| 1 | Tenancy core on Postgres, plain SQL | IN PROGRESS | A | tenants + projects migrated; users/memberships/invites/entitlements later |
-| 2 | RLS enforcement layer + leak-test suite | IN PROGRESS | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6 |
+| 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A | tenants + projects migrated; users/memberships/invites/entitlements later |
+| 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6 |
 | 3 | The context seam (withTenant, SET LOCAL) | NOT BUILT | — | a test-only `asTenant()` stands in until the real seam lands |
 | 4 | Tenant lifecycle + entitlements | NOT BUILT | — | |
 | 5 | Audited operator access | NOT BUILT | — | |
