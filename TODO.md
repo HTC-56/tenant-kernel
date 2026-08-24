@@ -51,7 +51,7 @@ build that and nothing else.
   must have ENABLE+FORCE RLS and a policy — catches global tables like `users`.
   Mirror `test/rls-coverage.test.ts`. Spec: §B4. Gate: typecheck + test + scrub.
 
-- [ ] **§B5** Write `test/seam.test.ts`: `withTenant` commits, rolls back on a
+- [x] **§B5** Write `test/seam.test.ts`: `withTenant` commits, rolls back on a
   throw, publishes all three settings, drops to `app_user`, rejects a bad id.
   Spec: §B5. Gate: typecheck + test + scrub.
 
