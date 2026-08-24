@@ -1,0 +1,25 @@
+{
+  "name": "tenant-kernel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Single-schema Postgres multi-tenancy core where isolation is a proven property.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.2.17",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
