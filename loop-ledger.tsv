@@ -4,3 +4,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-24T16:15:43	loop	qwen	commit	112	29707	43	8	594	- [ ] **§A6** Write `test/rls-coverage.test.ts`: discover tenant-scoped tables
 2026-08-24T16:25:24	loop	qwen	commit	90	14772	34	5	581	- [ ] **§A7** Write `.github/workflows/ci.yml`: two jobs running identical steps
 2026-08-24T16:32:10	loop	qwen	commit	75	10404	29	4	406	- [ ] **§A8** Write `README.md` (<120 lines): quickstart, the real-Postgres run,
+2026-08-24T16:43:37	loop	qwen	commit	98	15144	37	5	687	- [ ] **§A9** Write `verify.sh`: typecheck + test + scrub-check + the
