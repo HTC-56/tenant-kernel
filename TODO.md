@@ -20,7 +20,7 @@ header in TASK_PHASE_A.md, read it, build that and nothing else.
   from the catalog and assert each has ENABLE+FORCE RLS, a policy, no PUBLIC
   grant. Mirror `test/rls-refusal.test.ts`. Spec: §A6. Gate: typecheck + test + scrub.
 
-- [ ] **§A7** Write `.github/workflows/ci.yml`: two jobs running identical steps
+- [x] **§A7** Write `.github/workflows/ci.yml`: two jobs running identical steps
   — PGlite (no database) and an authoritative `postgres:16` service container via
   `DATABASE_URL`. Spec: §A7. Gate: typecheck + test + scrub.
 
