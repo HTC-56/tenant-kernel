@@ -16,7 +16,7 @@ header in TASK_PHASE_A.md, read it, build that and nothing else.
   `git ls-files` only — home paths, LAN IPs, key material, private hostnames.
   Spec: TASK_PHASE_A.md §A5. Gate: it exits 0, plus `pnpm typecheck` + `pnpm test`.
 
-- [ ] **§A6** Write `test/rls-coverage.test.ts`: discover tenant-scoped tables
+- [x] **§A6** Write `test/rls-coverage.test.ts`: discover tenant-scoped tables
   from the catalog and assert each has ENABLE+FORCE RLS, a policy, no PUBLIC
   grant. Mirror `test/rls-refusal.test.ts`. Spec: §A6. Gate: typecheck + test + scrub.
 
