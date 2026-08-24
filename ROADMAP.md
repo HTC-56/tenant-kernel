@@ -5,10 +5,10 @@ are the one permitted exception to append-only docs.
 
 | # | Feature (SPEC.md) | Status | Phase | Note |
 |---|---|---|---|---|
-| 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A | tenants + projects migrated; users/memberships/invites/entitlements later |
+| 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A, B | tenants + projects in A; users, memberships, invites and entitlement flags in B |
 | 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6 |
-| 3 | The context seam (withTenant, SET LOCAL) | NOT BUILT | — | a test-only `asTenant()` stands in until the real seam lands |
-| 4 | Tenant lifecycle + entitlements | NOT BUILT | — | |
+| 3 | The context seam (withTenant, SET LOCAL) | PARTIAL | B | `withTenant()` publishes all three settings and drops to app_user; session-token → user → active-tenant resolution and the Fastify plugin remain |
+| 4 | Tenant lifecycle + entitlements | PARTIAL | B | entitlement flags table and role-gated membership/invite policies shipped; provision, invite/accept, role change, suspend/resume remain |
 | 5 | Audited operator access | NOT BUILT | — | |
 | 6 | Tenant-scoped surface (projects CRUD) | NOT BUILT | — | |
 | 7 | Ops surface (/healthz, /metrics, ledger, auth) | NOT BUILT | — | |

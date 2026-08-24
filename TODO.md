@@ -35,3 +35,34 @@ header in TASK_PHASE_A.md, read it, build that and nothing else.
 - [x] **§A10** Close Phase A: append a Phase A section to STATUS.md and flip the
   ROADMAP.md rows this phase shipped. Spec: §A10. Gate: `bash verify.sh` green
   first, then commit both docs.
+
+## Phase B: the context seam — see TASK_PHASE_B.md
+
+`sql/0002_identity.sql` (§B1) and `src/db/seam.ts` (§B2) are already committed
+by the planning lane — do not rebuild them. These tasks prove them and add the
+thin typed data layer. Grep your section header in TASK_PHASE_B.md, read it,
+build that and nothing else.
+
+- [ ] **§B3** Write `test/identity-rls.test.ts`: cross-tenant refusal and
+  role-gated writes on the identity tables. Mirror `test/rls-refusal.test.ts`.
+  Spec: TASK_PHASE_B.md §B3. Gate: typecheck + test + scrub.
+
+- [ ] **§B4** Write `test/rls-grants.test.ts`: every table granted to `app_user`
+  must have ENABLE+FORCE RLS and a policy — catches global tables like `users`.
+  Mirror `test/rls-coverage.test.ts`. Spec: §B4. Gate: typecheck + test + scrub.
+
+- [ ] **§B5** Write `test/seam.test.ts`: `withTenant` commits, rolls back on a
+  throw, publishes all three settings, drops to `app_user`, rejects a bad id.
+  Spec: §B5. Gate: typecheck + test + scrub.
+
+- [ ] **§B6** Write `src/db/identity.ts` — four functions over a `Queryable`,
+  none of them naming a tenant — plus `test/identity-layer.test.ts`.
+  Spec: §B6. Gate: typecheck + test + scrub.
+
+- [ ] **§B7** Write `test/seam-only.test.ts`: scan `src/` and assert only the
+  seam opens transactions, sets the role, or publishes `app.*` settings.
+  Spec: §B7. Gate: typecheck + test + scrub.
+
+- [ ] **§B8** Close Phase B: append a README section on identity and roles, a
+  STATUS.md Phase B section, and bring the ROADMAP.md rows and reservations
+  ledger current. Spec: §B8. Gate: `bash verify.sh` green first.
