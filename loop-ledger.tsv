@@ -7,3 +7,5 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-24T16:43:37	loop	qwen	commit	98	15144	37	5	687	- [ ] **§A9** Write `verify.sh`: typecheck + test + scrub-check + the
 2026-08-24T16:50:05	loop	qwen	commit	87	14078	32	5	388	- [ ] **§A10** Close Phase A: append a Phase A section to STATUS.md and flip the
 2026-08-24T16:59:10	loop	qwen	commit	58	9099	22	3	545	- [ ] **§A10** Close Phase A: append a Phase A section to STATUS.md and flip the
+2026-08-24T17:17:27	plan	claude	commit	56	121309	28	0	642	plan next phase
+2026-08-24T17:32:35	loop	qwen	commit	54	16806	20	5	832	- [ ] **§B3** Write `test/identity-rls.test.ts`: cross-tenant refusal and
