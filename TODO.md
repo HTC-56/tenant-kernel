@@ -24,7 +24,7 @@ header in TASK_PHASE_A.md, read it, build that and nothing else.
   — PGlite (no database) and an authoritative `postgres:16` service container via
   `DATABASE_URL`. Spec: §A7. Gate: typecheck + test + scrub.
 
-- [ ] **§A8** Write `README.md` (<120 lines): quickstart, the real-Postgres run,
+- [x] **§A8** Write `README.md` (<120 lines): quickstart, the real-Postgres run,
   how isolation is enforced, layout, status. Every command shown must exist.
   Spec: §A8. Gate: typecheck + test + scrub.
 
