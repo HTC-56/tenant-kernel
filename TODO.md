@@ -28,7 +28,7 @@ header in TASK_PHASE_A.md, read it, build that and nothing else.
   how isolation is enforced, layout, status. Every command shown must exist.
   Spec: §A8. Gate: typecheck + test + scrub.
 
-- [ ] **§A9** Write `verify.sh`: typecheck + test + scrub-check + the
+- [x] **§A9** Write `verify.sh`: typecheck + test + scrub-check + the
   README-quickstart lint (every `pnpm`/`bash` command in the README resolves).
   Spec: §A9. Gate: `bash verify.sh` exits 0.
 
