@@ -98,6 +98,34 @@ export async function withTenant<T>(
 }
 
 /**
+ * Who an operator transaction is acting as. Deliberately separate from
+ * `RequestContext`: an operator is not a tenant user, holds no membership and
+ * has no `app.role`, so a transaction is either a tenant request or an
+ * operator action and never both.
+ */
+export interface OperatorContext {
+  readonly operatorId: string
+}
+
+type OperatorFn<T> = (tx: Queryable) => Promise<T>
+
+/**
+ * Publishes an operator identity onto an already-open transaction. Split out
+ * from `withOperator` for the same reason `applyContext` is split out from
+ * `withTenant`: the test harness publishes the identical identity and then
+ * rolls back, so there is one implementation of "how operator context is
+ * published", not two. No `SET LOCAL ROLE` — the operator lane keeps the
+ * connecting role's privileges; the audit row is what constrains it.
+ */
+export async function applyOperatorContext(
+  tx: Queryable,
+  ctx: OperatorContext,
+): Promise<void> {
+  const operatorId = requireUuid(ctx.operatorId, 'operatorId')
+  await tx.query("SELECT set_config('app.operator_id', $1, true)", [operatorId])
+}
+
+/**
  * The other door: one transaction with NO tenant context and NO drop to
  * `app_user`, for the operations that are cross-tenant by definition —
  * provisioning a tenant, suspending one, resuming one.
@@ -105,13 +133,35 @@ export async function withTenant<T>(
  * It lives here rather than in a lifecycle module on purpose. `withTenant` is
  * only meaningfully "the only door" if the privileged path is a door too:
  * one named, greppable function, so test/seam-only.test.ts still finds every
- * place a transaction can be opened. The privilege is the connecting role's,
- * which is why SPEC.md feature 5 puts operator identity, a required reason,
- * a TTL and an audit row in front of this in a later phase.
+ * place a transaction can be opened.
+ *
+ * Called with an `OperatorContext` it also publishes `app.operator_id`, and
+ * sql/0004_operator.sql then demands a live support grant and writes an audit
+ * row for everything the transaction does. Called without one it is the bare
+ * privileged connection Phase C shipped — which is what a migration and a test
+ * fixture are, and why the identity is a parameter rather than a requirement.
  */
-export async function withOperator<T>(
+export function withOperator<T>(engine: Engine, fn: OperatorFn<T>): Promise<T>
+export function withOperator<T>(
   engine: Engine,
-  fn: (tx: Queryable) => Promise<T>,
+  ctx: OperatorContext,
+  fn: OperatorFn<T>,
+): Promise<T>
+export function withOperator<T>(
+  engine: Engine,
+  ctxOrFn: OperatorContext | OperatorFn<T>,
+  maybeFn?: OperatorFn<T>,
 ): Promise<T> {
-  return engine.transaction(fn)
+  if (typeof ctxOrFn === 'function') {
+    return engine.transaction(ctxOrFn)
+  }
+  const fn = maybeFn
+  if (fn === undefined) throw new Error('seam: withOperator needs a callback')
+  // Validated before the transaction opens, so a malformed id is a caller
+  // error rather than a database error seen halfway through an action.
+  const ctx: OperatorContext = { operatorId: requireUuid(ctxOrFn.operatorId, 'operatorId') }
+  return engine.transaction(async (tx) => {
+    await applyOperatorContext(tx, ctx)
+    return fn(tx)
+  })
 }
