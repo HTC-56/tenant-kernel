@@ -78,11 +78,11 @@ that and nothing else.
   with `/seat cap/i`, raising the cap lets it in, `seatUsage` agrees.
   Spec: TASK_PHASE_C.md §C3. Gate: typecheck + test + scrub.
 
-- [ ] **§C4** Write `test/last-owner.test.ts`: demoting or removing a tenant's
+- [x] **§C4** Write `test/last-owner.test.ts`: demoting or removing a tenant's
   only owner rejects; with two owners it succeeds; deleting the tenant still
   cascades. Spec: §C4. Gate: typecheck + test + scrub.
 
-- [ ] **§C5** Write `test/suspension.test.ts`: a suspended tenant sees none of
+- [x] **§C5** Write `test/suspension.test.ts`: a suspended tenant sees none of
   its own data but still reads its `tenants` row; resume restores it.
   Spec: §C5. Gate: typecheck + test + scrub.
 
