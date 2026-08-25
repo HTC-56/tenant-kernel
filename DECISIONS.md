@@ -25,10 +25,31 @@
   enforces the file half; sessions carry the commit-message half.
 - **Neutral git identity** until the publish decision (human-gated).
 
+## Locked (2026-08-25, Phase E)
+
+- **Engine divergence, recorded per the engines rule.** A parameter cast
+  written `$n::jsonb` behaves differently on the two engines: the server
+  declares the parameter jsonb and the `postgres` driver re-serializes an
+  already-encoded JSON string into a jsonb string scalar, while PGlite sends
+  text and stores an object. Found by the first authoritative real-Postgres
+  run (publish prep); it had silently corrupted `audit_log.detail` and broken
+  feature-flag reads on real Postgres only. **Convention: `::text::jsonb`**
+  for every JSON string parameter; `test/engine-parity.test.ts` pins it.
+- **Suspend/resume both demand a live support grant** when an operator
+  identity is published (sql/0004 gates `set_tenant_state` in both
+  directions); the operator API surfaces the refusal as 409 and offers the
+  one-step reason+TTL path rather than weakening the gate.
+- **The console page itself is unauthenticated; all data behind it needs the
+  static bearer.** Recorded with rationale in the ROADMAP reservations ledger.
+
+## Human-gated — RESOLVED (2026-08-25)
+
+- **Published**: github.com/HTC-56/tenant-kernel, repo name as scaffolded,
+  MIT (holder HTC-56), on the operator's order. Loop commits keep the
+  `buildloop` identity — the pipeline story docs/PROCESS.md tells.
+
 ## Human-gated (never resolved by the loop)
 
-- Publishing: remote creation, repo name confirmation, license choice
-  (default intent: MIT), and the account/handle it lives under.
 - Any scope beyond SPEC.md v1.
 
 ## Open Questions

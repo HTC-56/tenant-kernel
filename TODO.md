@@ -134,3 +134,35 @@ your own section, read it, build that and nothing else.
 - [x] **§D8** Close Phase D: append a README operator-access section and a
   STATUS.md Phase D section, flip the ROADMAP.md row 5 and add one reservation.
   Spec: §D8. Gate: `bash verify.sh` green first.
+
+- [x] **§E1** `sql/0005_sessions.sql` + `src/db/sessions.ts`: opaque bearer
+  sessions, digest-only storage, membership-gated mint, role read at
+  resolution time. Spec: feature 3 (second half). Gate: typecheck + test + scrub.
+
+- [x] **§E2** `src/http/session-plugin.ts` + `src/http/tenant-routes.ts`:
+  session → user → active-tenant resolution as a Fastify plugin, uniform 401,
+  projects CRUD end to end, tenant-readable audit + grants. Spec: features 3, 6.
+  Gate: typecheck + test + scrub.
+
+- [x] **§E3** `src/http/operator-routes.ts` + ops surface: static-bearer
+  operator API (provision / state / grants / audit feed), suspend-without-grant
+  surfaced as 409, duplicate slug as 409, `/healthz`, `/metrics` (Prometheus
+  text by route template), JSONL ops ledger. Spec: feature 7. Gate: typecheck +
+  test + scrub.
+
+- [x] **§E4** `src/console/console.html` + `GET /operator`: one self-contained
+  file — tenant table with state/seats/entitlements, provision form, support
+  grants with reason + TTL countdown, live audit feed; `test/console.test.ts`
+  enforces self-containment as text properties. Spec: feature 8. Gate:
+  typecheck + test + scrub.
+
+- [x] **§E5** Packaging + docs: YAML config (zod-validated), example systemd
+  unit, `pnpm mint-session` CLI, README rewrite with the two-tenant quickstart
+  and hero screenshot from a real staged run, `docs/PROCESS.md`, MIT LICENSE.
+  Spec: feature 9. Gate: `bash verify.sh` green.
+
+- [x] **§E6** Engine parity: first authoritative real-Postgres run caught the
+  `::jsonb` parameter double-encoding divergence (feature flags read wrong,
+  audit detail stored as a string scalar); convention is now `::text::jsonb`,
+  pinned by `test/engine-parity.test.ts`, recorded in DECISIONS.md and
+  PROCESS.md. Gate: full suite green on BOTH engines.

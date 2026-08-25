@@ -7,14 +7,14 @@ are the one permitted exception to append-only docs.
 |---|---|---|---|---|
 | 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A, B | tenants + projects in A; users, memberships, invites and entitlement flags in B |
 | 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6; grants-based coverage check (`test/rls-grants.test.ts`) landed in B |
-| 3 | The context seam (withTenant, SET LOCAL) | SHIPPED | B, C | `withTenant()`, `withOperator()` (carrying an `app.operator_id` identity since D) and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
+| 3 | The context seam (withTenant, SET LOCAL) | SHIPPED | B, C, E | `withTenant()`, `withOperator()` (carrying an `app.operator_id` identity since D) and `test/seam-only.test.ts` are proven; E adds session-token → user → active-tenant resolution as the Fastify plugin (`src/http/session-plugin.ts`) |
 | 4 | Tenant lifecycle + entitlements | SHIPPED | B, C | provision, invite/accept, role change and suspend/resume ship in C; seat cap, last-owner and feature toggles are enforced by triggers and policies |
 | 5 | Audited operator access | SHIPPED | D | operator identity, reason-and-TTL support grants and an append-only audit table a tenant can read for itself |
-| 6 | Tenant-scoped surface (projects CRUD) | NOT BUILT | — | |
-| 7 | Ops surface (/healthz, /metrics, ledger, auth) | NOT BUILT | — | |
-| 8 | Operator console | NOT BUILT | — | |
-| 9 | Deploy-grade packaging (config, unit, README, dual-engine CI) | PARTIAL | A | CI, README and verify.sh land in A; YAML config, systemd unit, quickstart hero later |
-| — | docs/PROCESS.md (the loop story) | NOT BUILT | — | written near the end, when there is a ledger to excerpt |
+| 6 | Tenant-scoped surface (projects CRUD) | SHIPPED | E | `/api/projects` end to end; another tenant's id and a nonexistent id are the same 404 (`test/http-tenant-api.test.ts`) |
+| 7 | Ops surface (/healthz, /metrics, ledger, auth) | SHIPPED | E | Prometheus text by route template; JSONL ops ledger per operator mutation; static bearer on `/operator/api` |
+| 8 | Operator console | SHIPPED | E | one self-contained HTML file; self-containment enforced by `test/console.test.ts`; hero = real staged capture (`docs/console.png`) |
+| 9 | Deploy-grade packaging (config, unit, README, dual-engine CI) | SHIPPED | A, E | zod-validated YAML config, example systemd unit, `pnpm mint-session`, README quickstart verified live, CI green on both engine jobs |
+| — | docs/PROCESS.md (the loop story) | SHIPPED | E | includes what the dual-engine gate caught (the `::jsonb` parameter divergence) |
 
 When every row reads SHIPPED and verify.sh is green, the project is done — the
 planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
@@ -62,3 +62,22 @@ planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
   are. Making an operator identity mandatory belongs to the phase that puts an
   authenticated operator API in front of these functions. Home:
   `sql/0004_operator.sql`.
+- **Real-Postgres proof: carried out at publish prep (Phase E).** The Phase A
+  reservation relocated the authoritative run to CI; before the repo went
+  public it was run locally against a `postgres:16` container instead — and it
+  failed: the `::jsonb` parameter double-encoding divergence (see DECISIONS.md
+  and docs/PROCESS.md). Fixed as the `::text::jsonb` convention, pinned by
+  `test/engine-parity.test.ts`. The reservation's bet ("CI carries it") would
+  have gone red on the first public push; running it pre-publish was the call.
+  Home: `test/engine-parity.test.ts`.
+- **The console page is served unauthenticated (Phase E).** `GET /operator`
+  returns static HTML; every byte of data behind it requires the static
+  bearer, which the page holds in memory only. Gating the HTML itself would
+  add a login surface to a demo console without protecting anything the API
+  does not already protect. Home: `src/http/server.ts`.
+- **`sessions` is deliberately outside the tenant-scoped set (Phase E).** The
+  column is named `active_tenant_id` because the row is global infrastructure
+  (resolution happens before tenant context exists), so the catalog-driven
+  coverage suite — which discovers by a literal `tenant_id` column — is right
+  not to claim it. `app_user` holds no grant on it; RLS is enabled with no
+  policies as a fail-closed backstop. Home: `sql/0005_sessions.sql`.

@@ -1,0 +1,30 @@
+# Example systemd unit for tenant-kernel — SPEC.md feature 9.
+# Adjust paths, user, and the DATABASE_URL, then:
+#   sudo cp deploy/tenant-kernel.service /etc/systemd/system/
+#   sudo systemctl enable --now tenant-kernel
+
+[Unit]
+Description=tenant-kernel — multi-tenant Postgres kernel
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=tenantkernel
+WorkingDirectory=/opt/tenant-kernel
+Environment=NODE_ENV=production
+Environment=DATABASE_URL=postgres://app:change-me@127.0.0.1:5432/tenant_kernel
+Environment=TENANT_KERNEL_CONFIG=/opt/tenant-kernel/tenant-kernel.yaml
+ExecStart=/usr/bin/node src/index.ts
+Restart=on-failure
+RestartSec=3
+
+# The process needs nothing outside its directory and its database.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/tenant-kernel
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

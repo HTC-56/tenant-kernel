@@ -59,3 +59,25 @@ the cap, a tenant cannot be left without an owner, a suspended tenant sees none
 of its own data but still sees why, a switched-off feature stops new writes
 without hiding old rows, and no SECURITY DEFINER function is executable by
 PUBLIC.
+
+## Phase E — the served surface, and the divergence
+
+Phase E shipped the second half of feature 3 and features 6–9: `sql/0005_sessions.sql`
+with digest-only opaque bearer sessions, the Fastify session plugin
+(`src/http/session-plugin.ts`), projects CRUD end to end, the static-bearer
+operator API, `/healthz` + `/metrics`, the JSONL ops ledger, the self-contained
+operator console with its real-capture hero (`docs/console.png`), YAML config,
+the example systemd unit, `pnpm mint-session`, docs/PROCESS.md, and the MIT
+LICENSE. The quickstart was verified live: two tenants side by side, the
+cross-tenant read refused as 404, a suspension demanding — and receiving — a
+reasoned, time-boxed support grant the suspended tenant can read about itself.
+
+The phase also carried the project's one real engine incident: the first
+authoritative real-Postgres run (a local `postgres:16` container at publish
+prep) failed two feature-flag tests that PGlite had always passed. Root cause:
+a `$n::jsonb` parameter cast makes the server declare the parameter jsonb and
+the `postgres` driver then re-serializes an encoded string into a jsonb string
+scalar. Convention is now `::text::jsonb`; `test/engine-parity.test.ts` pins
+it; DECISIONS.md and docs/PROCESS.md carry the record. Suite: 128 tests over
+25 files, green on BOTH engines. Phase E was implemented by the frontier lane
+directly (operator's order), on the same gates the loop ships under.

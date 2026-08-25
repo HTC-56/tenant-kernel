@@ -1,0 +1,20 @@
+# tenant-kernel example config — copy to tenant-kernel.yaml and edit.
+# The live file is gitignored; this example is the documentation.
+#
+# DATABASE_URL is deliberately NOT here: the engine is picked by the
+# environment, same as `pnpm test`. Unset it and the server runs on an
+# in-process PGlite — fine for a demo, gone when the process is.
+
+server:
+  host: 127.0.0.1
+  port: 8100
+
+operator:
+  # Static bearer for /operator/api and the console. Rotate by editing + restart.
+  token: change-me-to-a-long-random-string
+  email: operator@example.com
+  name: On-call Operator
+
+ops:
+  # JSONL ops ledger — one line per operator mutation. Gitignored at the default.
+  ledgerPath: ledger.jsonl
