@@ -36,8 +36,11 @@ afterAll(async () => {
 
 describe('the seat cap trigger enforces entitlements.seat_cap', () => {
   it('the entitlements row has seat_cap 5', async () => {
+    // Scoped: the privileged connection sees every tenant's row, and a shared
+    // database (CI's service container, a dev server) may hold other suites'.
     const rows = await engine.query<{ seat_cap: string | number }>(
-      'SELECT seat_cap FROM entitlements',
+      'SELECT seat_cap FROM entitlements WHERE tenant_id = $1',
+      [tenantId],
     )
     expect(Number(rows[0].seat_cap)).toBe(5)
   })
@@ -57,7 +60,7 @@ describe('the seat cap trigger enforces entitlements.seat_cap', () => {
   })
 
   it('raising seat_cap to 6 lets the fifth filler in', async () => {
-    await engine.query('UPDATE entitlements SET seat_cap = 6')
+    await engine.query('UPDATE entitlements SET seat_cap = 6 WHERE tenant_id = $1', [tenantId])
     await expect(
       seedMembership(engine, tenantId, fillerIds[4], 'member'),
     ).resolves.toBeDefined()

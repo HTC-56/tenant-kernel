@@ -106,7 +106,11 @@ export async function logOperatorAction(
   detail: Record<string, unknown> = {},
 ): Promise<string> {
   const rows = await tx.query<{ id: string }>(
-    'SELECT log_operator_action($1, $2, $3::jsonb) AS id',
+    // ::text::jsonb, not ::jsonb — the inner cast pins the parameter's wire
+    // type to text so both engines parse the encoded JSON identically; with a
+    // bare ::jsonb cast postgres.js re-serializes the string into a jsonb
+    // string scalar. See DECISIONS.md (engine divergence, Phase E).
+    'SELECT log_operator_action($1, $2, $3::text::jsonb) AS id',
     [tenantId, action, JSON.stringify(detail)],
   )
   return rows[0].id

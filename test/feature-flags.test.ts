@@ -32,7 +32,12 @@ afterAll(async () => {
 
 function setFlags(tid: string, flags: string): Promise<Record<string, unknown>[]> {
   return engine.query(
-    'UPDATE entitlements SET features = $2::jsonb WHERE tenant_id = $1',
+    // ::text::jsonb — the inner cast pins the PARAMETER's wire type to text.
+    // With a bare ::jsonb the server declares the parameter jsonb and the
+    // postgres.js driver re-serializes the already-encoded string into a
+    // jsonb string scalar; PGlite sends text either way. Recorded in
+    // DECISIONS.md as the one engine divergence found by the dual-engine CI.
+    'UPDATE entitlements SET features = $2::text::jsonb WHERE tenant_id = $1',
     [tid, flags],
   )
 }
