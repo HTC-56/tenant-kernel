@@ -66,3 +66,38 @@ build that and nothing else.
 - [x] **§B8** Close Phase B: append a README section on identity and roles, a
   STATUS.md Phase B section, and bring the ROADMAP.md rows and reservations
   ledger current. Spec: §B8. Gate: `bash verify.sh` green first.
+
+## Phase C: tenant lifecycle and entitlements — see TASK_PHASE_C.md
+
+`sql/0003_lifecycle.sql` (§C1) and `src/db/lifecycle.ts` + `withOperator()`
+(§C2) are already committed by the planning lane — do not rebuild them. These
+tasks prove them. Grep your section header in TASK_PHASE_C.md, read it, build
+that and nothing else.
+
+- [ ] **§C3** Write `test/seat-cap.test.ts`: five seats fill, the sixth rejects
+  with `/seat cap/i`, raising the cap lets it in, `seatUsage` agrees.
+  Spec: TASK_PHASE_C.md §C3. Gate: typecheck + test + scrub.
+
+- [ ] **§C4** Write `test/last-owner.test.ts`: demoting or removing a tenant's
+  only owner rejects; with two owners it succeeds; deleting the tenant still
+  cascades. Spec: §C4. Gate: typecheck + test + scrub.
+
+- [ ] **§C5** Write `test/suspension.test.ts`: a suspended tenant sees none of
+  its own data but still reads its `tenants` row; resume restores it.
+  Spec: §C5. Gate: typecheck + test + scrub.
+
+- [ ] **§C6** Write `test/feature-flags.test.ts`: flags are default-on; an
+  explicit jsonb `false` refuses new projects without hiding old ones.
+  Spec: §C6. Gate: typecheck + test + scrub.
+
+- [ ] **§C7** Write `test/lifecycle-layer.test.ts`: provision a tenant with its
+  owner, then redeem an invite into it from another tenant's transaction.
+  Spec: §C7. Gate: typecheck + test + scrub.
+
+- [ ] **§C8** Write `test/function-grants.test.ts`: no SECURITY DEFINER function
+  is executable by PUBLIC; only `accept_invite` reaches `app_user`. Mirror
+  `test/rls-grants.test.ts`. Spec: §C8. Gate: typecheck + test + scrub.
+
+- [ ] **§C9** Close Phase C: append a README lifecycle section and a STATUS.md
+  Phase C section, flip the ROADMAP.md rows and add two reservations.
+  Spec: §C9. Gate: `bash verify.sh` green first.
