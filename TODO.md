@@ -119,7 +119,7 @@ your own section, read it, build that and nothing else.
   non-blank reason and a positive TTL; a lapsed or revoked grant cannot record
   an action. Spec: §D4. Gate: typecheck + test + scrub.
 
-- [ ] **§D5** Write `test/audit-append-only.test.ts`: UPDATE and DELETE on
+- [x] **§D5** Write `test/audit-append-only.test.ts`: UPDATE and DELETE on
   `audit_log` refuse even for the table owner, `app_user` cannot insert, and a
   tenant delete still cascades. Spec: §D5. Gate: typecheck + test + scrub.
 
