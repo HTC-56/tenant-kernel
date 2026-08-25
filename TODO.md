@@ -86,11 +86,11 @@ that and nothing else.
   its own data but still reads its `tenants` row; resume restores it.
   Spec: §C5. Gate: typecheck + test + scrub.
 
-- [ ] **§C6** Write `test/feature-flags.test.ts`: flags are default-on; an
+- [x] **§C6** Write `test/feature-flags.test.ts`: flags are default-on; an
   explicit jsonb `false` refuses new projects without hiding old ones.
   Spec: §C6. Gate: typecheck + test + scrub.
 
-- [ ] **§C7** Write `test/lifecycle-layer.test.ts`: provision a tenant with its
+- [x] **§C7** Write `test/lifecycle-layer.test.ts`: provision a tenant with its
   owner, then redeem an invite into it from another tenant's transaction.
   Spec: §C7. Gate: typecheck + test + scrub.
 
