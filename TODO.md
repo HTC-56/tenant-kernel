@@ -111,7 +111,7 @@ committed by the planning lane — do not rebuild them. These tasks prove them.
 here needs, including the one runner distinction that will bite you. Then grep
 your own section, read it, build that and nothing else.
 
-- [ ] **§D3** Write `test/operator-identity.test.ts`: an operator holds no
+- [x] **§D3** Write `test/operator-identity.test.ts`: an operator holds no
   membership, is invisible to a tenant it never touched, visible to one it did,
   and unwritable. Spec: TASK_PHASE_D.md §D3. Gate: typecheck + test + scrub.
 
