@@ -13,7 +13,12 @@
  */
 import { openEngine, type Engine, type Queryable } from '../../src/db/engine.ts'
 import { migrate } from '../../src/db/migrate.ts'
-import { applyContext, type RequestContext, type TenantRole } from '../../src/db/seam.ts'
+import {
+  applyContext,
+  applyOperatorContext,
+  type RequestContext,
+  type TenantRole,
+} from '../../src/db/seam.ts'
 
 export async function freshEngine(): Promise<Engine> {
   const engine = await openEngine()
@@ -58,6 +63,36 @@ export async function seedMembership(
   return rows[0].id
 }
 
+/** Creates an operator — global, no tenant, no membership. Returns its id. */
+export async function seedOperator(engine: Engine, label: string): Promise<string> {
+  const rows = await engine.query<{ id: string }>(
+    'INSERT INTO operators (email, display_name) VALUES ($1, $2) RETURNING id',
+    [`${unique(label)}@example.com`, label],
+  )
+  return rows[0].id
+}
+
+/**
+ * Plants a support grant directly, bypassing `grant_support_access()` and its
+ * positive-TTL check — which is how a fixture gets a grant that has already
+ * lapsed. `ttlMinutes` may be negative for exactly that. Returns the grant id.
+ */
+export async function seedSupportGrant(
+  engine: Engine,
+  tenantId: string,
+  operatorId: string,
+  reason: string,
+  ttlMinutes: number,
+): Promise<string> {
+  const rows = await engine.query<{ id: string }>(
+    `INSERT INTO support_grants (tenant_id, operator_id, reason, expires_at)
+          VALUES ($1, $2, $3, now() + ($4::int * interval '1 minute'))
+       RETURNING id`,
+    [tenantId, operatorId, reason, ttlMinutes],
+  )
+  return rows[0].id
+}
+
 const ROLLBACK = Symbol('tenant-kernel:test-rollback')
 
 function isRollback(err: unknown): err is { value: unknown } {
@@ -95,6 +130,31 @@ export async function asTenant<T>(
   fn: (tx: Queryable) => Promise<T>,
 ): Promise<T> {
   return asContext(engine, { tenantId }, fn)
+}
+
+/**
+ * Runs `fn` as a named operator, then rolls back.
+ *
+ * Same door as `withOperator(engine, { operatorId }, fn)` —
+ * `applyOperatorContext` is the seam's own publisher — except that this one
+ * never commits. Privileges are the connecting role's, exactly as the operator
+ * lane's are; the identity is what the audit trail records.
+ */
+export async function asOperator<T>(
+  engine: Engine,
+  operatorId: string,
+  fn: (tx: Queryable) => Promise<T>,
+): Promise<T> {
+  try {
+    return await engine.transaction(async (tx) => {
+      await applyOperatorContext(tx, { operatorId })
+      const value = await fn(tx)
+      throw { [ROLLBACK]: true, value }
+    })
+  } catch (err) {
+    if (isRollback(err)) return err.value as T
+    throw err
+  }
 }
 
 /** No context published at all — the fail-closed case. */
