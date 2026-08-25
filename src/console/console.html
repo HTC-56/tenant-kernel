@@ -1,0 +1,268 @@
+<!doctype html>
+<!--
+  The operator console — SPEC.md feature 8. One self-contained file: inline
+  CSS, inline JS, system fonts, no framework, no build step, no external
+  request of any kind. It talks only to /operator/api/* with the static
+  bearer token the operator pastes in, and holds that token in memory only.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tenant-kernel · operator console</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --line: #282f3a;
+    --text: #dfe6ef; --dim: #8b96a5; --accent: #58a6ff;
+    --ok: #3fb950; --warn: #d29922; --bad: #f85149; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: 1.25rem; max-width: 1180px; margin: 0 auto;
+  }
+  header { display: flex; align-items: baseline; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  header h1 { font-size: 1.15rem; font-weight: 600; }
+  header h1 span { color: var(--accent); }
+  header .sub { color: var(--dim); font-size: .85rem; }
+  #conn { margin-left: auto; display: flex; gap: .5rem; align-items: center; }
+  #conn input { width: 16rem; }
+  #conn .dot { width: .6rem; height: .6rem; border-radius: 50%; background: var(--bad); }
+  #conn .dot.on { background: var(--ok); }
+  main { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1rem; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  section {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
+  }
+  section h2 {
+    font-size: .8rem; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--dim); margin-bottom: .75rem;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th { text-align: left; color: var(--dim); font-weight: 500; padding: .3rem .5rem; border-bottom: 1px solid var(--line); }
+  td { padding: .38rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: var(--mono); font-size: .8rem; }
+  .state { font-family: var(--mono); font-size: .75rem; padding: .05rem .45rem; border-radius: 99px; }
+  .state.active { color: var(--ok); border: 1px solid var(--ok); }
+  .state.suspended { color: var(--bad); border: 1px solid var(--bad); }
+  .grants-live { color: var(--warn); font-family: var(--mono); }
+  input, select, textarea {
+    background: var(--bg); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: .35rem .55rem; font: inherit; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { outline: 1px solid var(--accent); }
+  form .row { display: flex; gap: .5rem; margin-bottom: .5rem; }
+  button {
+    background: var(--bg); color: var(--accent); border: 1px solid var(--accent);
+    border-radius: 6px; padding: .3rem .8rem; font: inherit; cursor: pointer;
+  }
+  button:hover { background: var(--accent); color: var(--bg); }
+  button.subtle { border-color: var(--line); color: var(--dim); padding: .15rem .55rem; font-size: .78rem; }
+  button.subtle:hover { border-color: var(--bad); color: var(--bad); background: var(--bg); }
+  #feed { list-style: none; max-height: 30rem; overflow-y: auto; font-size: .82rem; }
+  #feed li { padding: .4rem 0; border-bottom: 1px solid var(--line); }
+  #feed .when { color: var(--dim); font-family: var(--mono); font-size: .72rem; }
+  #feed .action { font-family: var(--mono); color: var(--accent); }
+  #feed .reason { color: var(--warn); }
+  .countdown { font-family: var(--mono); color: var(--warn); }
+  #err { color: var(--bad); font-size: .82rem; min-height: 1.2rem; margin-bottom: .5rem; white-space: pre-wrap; }
+  .empty { color: var(--dim); font-style: italic; padding: .35rem .5rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>tenant-kernel <span>/operator</span></h1>
+  <div class="sub">single-schema multi-tenancy · isolation proven at the database layer</div>
+  <div id="conn">
+    <span class="dot" id="dot"></span>
+    <input id="token" type="password" placeholder="operator bearer token" autocomplete="off">
+    <button id="connect">connect</button>
+  </div>
+</header>
+
+<div id="err"></div>
+
+<main>
+  <div>
+    <section>
+      <h2>Tenants</h2>
+      <table>
+        <thead><tr>
+          <th>slug</th><th>name</th><th>state</th><th>seats</th><th>features</th><th>live grants</th><th></th>
+        </tr></thead>
+        <tbody id="tenants"><tr><td class="empty" colspan="7">connect to load</td></tr></tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Audit feed — what tenants can read about you</h2>
+      <ul id="feed"><li class="empty">connect to load</li></ul>
+    </section>
+  </div>
+
+  <div>
+    <section>
+      <h2>Provision a tenant</h2>
+      <form id="provision">
+        <div class="row"><input name="slug" placeholder="slug (lowercase)" required pattern="[a-z0-9][a-z0-9-]*"><input name="name" placeholder="display name" required></div>
+        <div class="row"><input name="ownerEmail" type="email" placeholder="owner email" required><input name="ownerName" placeholder="owner name" required></div>
+        <button>provision</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Support access — reason + time box required</h2>
+      <form id="grant">
+        <div class="row"><select name="tenantId" required><option value="">tenant…</option></select></div>
+        <div class="row"><input name="reason" placeholder="why are you in this account?" required></div>
+        <div class="row"><input name="ttlMinutes" type="number" min="1" max="1440" value="15" required><button>open grant</button></div>
+      </form>
+      <table>
+        <thead><tr><th>tenant</th><th>reason</th><th>expires in</th><th></th></tr></thead>
+        <tbody id="grants"><tr><td class="empty" colspan="4">none live</td></tr></tbody>
+      </table>
+    </section>
+  </div>
+</main>
+
+<script>
+'use strict'
+
+const $ = (id) => document.getElementById(id)
+let token = ''
+let grants = []
+
+function setError(text) { $('err').textContent = text || '' }
+
+async function api(path, options = {}) {
+  const res = await fetch('/operator/api' + path, {
+    ...options,
+    headers: {
+      Authorization: 'Bearer ' + token,
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+    },
+  })
+  if (res.status === 401) { $('dot').classList.remove('on'); throw new Error('unauthorized — check the token') }
+  const body = res.status === 204 ? null : await res.json()
+  if (!res.ok) throw new Error(body && body.error ? body.error : res.status + ' from ' + path)
+  return body
+}
+
+function esc(text) {
+  const div = document.createElement('div')
+  div.textContent = String(text)
+  return div.innerHTML
+}
+
+function renderTenants(tenants) {
+  const rows = tenants.map((t) => {
+    const features = Object.entries(t.features).map(([k, v]) => k + ':' + v).join(' ') || '—'
+    const toggle = t.state === 'active'
+      ? '<button class="subtle" data-suspend="' + t.id + '">suspend</button>'
+      : '<button class="subtle" data-resume="' + t.id + '">resume</button>'
+    return '<tr>' +
+      '<td class="mono">' + esc(t.slug) + '</td>' +
+      '<td>' + esc(t.name) + '</td>' +
+      '<td><span class="state ' + esc(t.state) + '">' + esc(t.state) + '</span></td>' +
+      '<td class="mono">' + t.seatsUsed + '/' + t.seatCap + '</td>' +
+      '<td class="mono">' + esc(features) + '</td>' +
+      '<td class="grants-live">' + (t.liveGrants || '—') + '</td>' +
+      '<td>' + toggle + '</td></tr>'
+  })
+  $('tenants').innerHTML = rows.join('') || '<tr><td class="empty" colspan="7">no tenants yet</td></tr>'
+  const select = document.querySelector('#grant select')
+  const current = select.value
+  select.innerHTML = '<option value="">tenant…</option>' +
+    tenants.map((t) => '<option value="' + t.id + '">' + esc(t.slug) + '</option>').join('')
+  select.value = current
+}
+
+function renderGrants() {
+  const now = Date.now()
+  const rows = grants.map((g) => {
+    const left = Math.max(0, Math.floor((new Date(g.expiresAt).getTime() - now) / 1000))
+    const mm = String(Math.floor(left / 60)).padStart(2, '0')
+    const ss = String(left % 60).padStart(2, '0')
+    return '<tr>' +
+      '<td class="mono">' + esc(g.tenantSlug) + '</td>' +
+      '<td>' + esc(g.reason) + '</td>' +
+      '<td class="countdown">' + mm + ':' + ss + '</td>' +
+      '<td><button class="subtle" data-revoke="' + g.id + '">revoke</button></td></tr>'
+  })
+  $('grants').innerHTML = rows.join('') || '<tr><td class="empty" colspan="4">none live</td></tr>'
+}
+
+function renderFeed(entries) {
+  $('feed').innerHTML = entries.map((e) =>
+    '<li><span class="when">' + esc(new Date(e.createdAt).toISOString().replace('T', ' ').slice(0, 19)) + '</span> ' +
+    '<span class="mono">' + esc(e.tenantSlug) + '</span> ' +
+    '<span class="action">' + esc(e.action) + '</span>' +
+    (e.reason ? ' <span class="reason">“' + esc(e.reason) + '”</span>' : '') +
+    '</li>',
+  ).join('') || '<li class="empty">no audit entries yet</li>'
+}
+
+async function refresh() {
+  if (!token) return
+  const [tenants, liveGrants, audit] = await Promise.all([
+    api('/tenants'), api('/support-grants'), api('/audit'),
+  ])
+  grants = liveGrants
+  renderTenants(tenants)
+  renderGrants()
+  renderFeed(audit)
+  $('dot').classList.add('on')
+  setError('')
+}
+
+function guarded(fn) {
+  return (...args) => fn(...args).then(refresh).catch((err) => setError(err.message))
+}
+
+$('connect').addEventListener('click', () => {
+  token = $('token').value.trim()
+  refresh().catch((err) => setError(err.message))
+})
+
+$('provision').addEventListener('submit', (event) => {
+  event.preventDefault()
+  const data = Object.fromEntries(new FormData(event.target))
+  guarded(() => api('/tenants', { method: 'POST', body: JSON.stringify(data) }))()
+  event.target.reset()
+})
+
+$('grant').addEventListener('submit', (event) => {
+  event.preventDefault()
+  const data = Object.fromEntries(new FormData(event.target))
+  data.ttlMinutes = Number(data.ttlMinutes)
+  guarded(() => api('/support-grants', { method: 'POST', body: JSON.stringify(data) }))()
+})
+
+document.body.addEventListener('click', (event) => {
+  const el = event.target
+  if (!(el instanceof HTMLElement)) return
+  if (el.dataset.suspend) {
+    const reason = window.prompt('Suspending needs a live support grant.\nReason for entering this account:')
+    if (!reason) return
+    guarded(() => api('/tenants/' + el.dataset.suspend + '/state', {
+      method: 'POST', body: JSON.stringify({ state: 'suspended', reason, ttlMinutes: 15 }),
+    }))()
+  } else if (el.dataset.resume) {
+    const reason = window.prompt('Resuming needs a live support grant.\nReason for entering this account:')
+    if (!reason) return
+    guarded(() => api('/tenants/' + el.dataset.resume + '/state', {
+      method: 'POST', body: JSON.stringify({ state: 'active', reason, ttlMinutes: 15 }),
+    }))()
+  } else if (el.dataset.revoke) {
+    guarded(() => api('/support-grants/' + el.dataset.revoke + '/revoke', { method: 'POST' }))()
+  }
+})
+
+setInterval(renderGrants, 1000)          // countdowns tick locally
+setInterval(() => { refresh().catch(() => {}) }, 4000)  // data refreshes quietly
+</script>
+</body>
+</html>
