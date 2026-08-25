@@ -7,9 +7,9 @@ are the one permitted exception to append-only docs.
 |---|---|---|---|---|
 | 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A, B | tenants + projects in A; users, memberships, invites and entitlement flags in B |
 | 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6; grants-based coverage check (`test/rls-grants.test.ts`) landed in B |
-| 3 | The context seam (withTenant, SET LOCAL) | SHIPPED | B, C | `withTenant()`, `withOperator()` and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
+| 3 | The context seam (withTenant, SET LOCAL) | SHIPPED | B, C | `withTenant()`, `withOperator()` (carrying an `app.operator_id` identity since D) and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
 | 4 | Tenant lifecycle + entitlements | SHIPPED | B, C | provision, invite/accept, role change and suspend/resume ship in C; seat cap, last-owner and feature toggles are enforced by triggers and policies |
-| 5 | Audited operator access | NOT BUILT | — | |
+| 5 | Audited operator access | PARTIAL | D | operators, reason-and-TTL support grants and the append-only audit table ship in D; §D8 flips this to SHIPPED once the proof suite lands |
 | 6 | Tenant-scoped surface (projects CRUD) | NOT BUILT | — | |
 | 7 | Ops surface (/healthz, /metrics, ledger, auth) | NOT BUILT | — | |
 | 8 | Operator console | NOT BUILT | — | |

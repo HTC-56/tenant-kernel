@@ -101,3 +101,36 @@ that and nothing else.
 - [x] **§C9** Close Phase C: append a README lifecycle section and a STATUS.md
   Phase C section, flip the ROADMAP.md rows and add two reservations.
   Spec: §C9. Gate: `bash verify.sh` green first.
+
+## Phase D: audited operator access — see TASK_PHASE_D.md
+
+`sql/0004_operator.sql` (§D1) and `src/db/operator.ts` + the
+`withOperator(ctx)` overload and three new test helpers (§D2) are already
+committed by the planning lane — do not rebuild them. These tasks prove them.
+**Read `## §D0` in TASK_PHASE_D.md first** — it carries the facts every task
+here needs, including the one runner distinction that will bite you. Then grep
+your own section, read it, build that and nothing else.
+
+- [ ] **§D3** Write `test/operator-identity.test.ts`: an operator holds no
+  membership, is invisible to a tenant it never touched, visible to one it did,
+  and unwritable. Spec: TASK_PHASE_D.md §D3. Gate: typecheck + test + scrub.
+
+- [ ] **§D4** Write `test/support-grant.test.ts`: a grant needs an operator, a
+  non-blank reason and a positive TTL; a lapsed or revoked grant cannot record
+  an action. Spec: §D4. Gate: typecheck + test + scrub.
+
+- [ ] **§D5** Write `test/audit-append-only.test.ts`: UPDATE and DELETE on
+  `audit_log` refuse even for the table owner, `app_user` cannot insert, and a
+  tenant delete still cascades. Spec: §D5. Gate: typecheck + test + scrub.
+
+- [ ] **§D6** Write `test/audit-trail.test.ts`: a tenant reads its own trail
+  newest-first with the grant's reason, sees none of another's, and still reads
+  it while suspended. Spec: §D6. Gate: typecheck + test + scrub.
+
+- [ ] **§D7** Write `test/operator-layer.test.ts`: `readSupportGrants` returns
+  camelCase `Date` fields, and a revoked grant survives as history with a
+  non-null `revokedAt`. Spec: §D7. Gate: typecheck + test + scrub.
+
+- [ ] **§D8** Close Phase D: append a README operator-access section and a
+  STATUS.md Phase D section, flip the ROADMAP.md row 5 and add one reservation.
+  Spec: §D8. Gate: `bash verify.sh` green first.
