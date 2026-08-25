@@ -21,3 +21,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-25T01:34:52	loop	qwen	commit	103	14202	39	11	417	- [ ] **§C9** Close Phase C: append a README lifecycle section and a STATUS.md
 2026-08-25T01:56:18	plan	claude	commit	65	140311	35	8	695	plan next phase
 2026-08-25T01:59:36	loop	qwen	commit	36	4757	14	2	113	- [ ] **§D3** Write `test/operator-identity.test.ts`: an operator holds no
+2026-08-25T02:03:06	loop	qwen	commit	80	20225	29	6	210	- [ ] **§D4** Write `test/support-grant.test.ts`: a grant needs an operator, a
