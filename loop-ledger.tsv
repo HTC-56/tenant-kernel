@@ -14,3 +14,5 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-24T18:02:23	loop	qwen	no-op	103	29775	42	13	1146	- [ ] **§B6** Write `src/db/identity.ts` — four functions over a `Queryable`,
 2026-08-24T18:09:47	loop	qwen	commit	121	33711	49	14	443	- [ ] **§B7** Write `test/seam-only.test.ts`: scan `src/` and assert only the
 2026-08-24T18:23:36	loop	qwen	commit	106	17242	44	11	829	- [ ] **§B8** Close Phase B: append a README section on identity and roles, a
+2026-08-25T00:20:23	plan	claude	commit	75	203829	39	0	819	plan next phase
+2026-08-25T00:25:31	loop	qwen	commit	34	7673	13	2	228	- [ ] **§C3** Write `test/seat-cap.test.ts`: five seats fill, the sixth rejects
