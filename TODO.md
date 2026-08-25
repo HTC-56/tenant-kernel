@@ -115,7 +115,7 @@ your own section, read it, build that and nothing else.
   membership, is invisible to a tenant it never touched, visible to one it did,
   and unwritable. Spec: TASK_PHASE_D.md §D3. Gate: typecheck + test + scrub.
 
-- [ ] **§D4** Write `test/support-grant.test.ts`: a grant needs an operator, a
+- [x] **§D4** Write `test/support-grant.test.ts`: a grant needs an operator, a
   non-blank reason and a positive TTL; a lapsed or revoked grant cannot record
   an action. Spec: §D4. Gate: typecheck + test + scrub.
 
