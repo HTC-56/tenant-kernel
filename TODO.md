@@ -74,7 +74,7 @@ build that and nothing else.
 tasks prove them. Grep your section header in TASK_PHASE_C.md, read it, build
 that and nothing else.
 
-- [ ] **§C3** Write `test/seat-cap.test.ts`: five seats fill, the sixth rejects
+- [x] **§C3** Write `test/seat-cap.test.ts`: five seats fill, the sixth rejects
   with `/seat cap/i`, raising the cap lets it in, `seatUsage` agrees.
   Spec: TASK_PHASE_C.md §C3. Gate: typecheck + test + scrub.
 
