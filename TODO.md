@@ -127,7 +127,7 @@ your own section, read it, build that and nothing else.
   newest-first with the grant's reason, sees none of another's, and still reads
   it while suspended. Spec: §D6. Gate: typecheck + test + scrub.
 
-- [ ] **§D7** Write `test/operator-layer.test.ts`: `readSupportGrants` returns
+- [x] **§D7** Write `test/operator-layer.test.ts`: `readSupportGrants` returns
   camelCase `Date` fields, and a revoked grant survives as history with a
   non-null `revokedAt`. Spec: §D7. Gate: typecheck + test + scrub.
 
