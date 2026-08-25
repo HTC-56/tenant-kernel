@@ -24,3 +24,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-25T02:03:06	loop	qwen	commit	80	20225	29	6	210	- [ ] **§D4** Write `test/support-grant.test.ts`: a grant needs an operator, a
 2026-08-25T02:05:00	loop	qwen	commit	99	22000	37	8	114	- [ ] **§D5** Write `test/audit-append-only.test.ts`: UPDATE and DELETE on
 2026-08-25T02:07:03	loop	qwen	commit	106	13198	41	6	123	- [ ] **§D6** Write `test/audit-trail.test.ts`: a tenant reads its own trail
+2026-08-25T02:09:30	loop	qwen	commit	97	15447	36	5	147	- [ ] **§D7** Write `test/operator-layer.test.ts`: `readSupportGrants` returns
