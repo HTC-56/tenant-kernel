@@ -59,6 +59,16 @@ readable. Seat-cap and last-owner rules are enforced by triggers. Feature
 toggles are default-on, disabled by an explicit jsonb `false`. See
 `sql/0003_lifecycle.sql` and `test/suspension.test.ts`.
 
+## Audited operator access
+
+Operators are a separate identity population — no membership, no role — published
+as a fourth context setting `app.operator_id` by `withOperator()`. Support access
+to a tenant requires a non-blank reason and a positive TTL; revocation is a
+timestamp, not a delete. Every operator action lands in `audit_log`, which a
+`BEFORE UPDATE OR DELETE` trigger keeps append-only even for the table owner.
+A tenant reads its own trail under RLS, including while suspended. See
+`sql/0004_operator.sql` and `test/audit-append-only.test.ts`.
+
 ## Status
 
 v1 is in progress. See [ROADMAP.md](ROADMAP.md).

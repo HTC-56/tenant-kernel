@@ -32,7 +32,22 @@ drops to `app_user` and publishes all three settings. A tenant sees only its
 own people. Membership and invite writes need an `admin` or `owner` role. A
 table granted to `app_user` without RLS now fails the build.
 
-What is next: audited operator access (SPEC.md feature 5) — operator identity,
+What is next: audited operator access (SPEC.md feature 5)
+
+## Phase D — audited operator access
+
+Phase D shipped `sql/0004_operator.sql`, `src/db/operator.ts`, the `withOperator(ctx)`
+overload in `src/db/seam.ts`, three new test helpers, and five new test files
+(`test/operator-identity.test.ts`, `test/support-grant.test.ts`,
+`test/audit-append-only.test.ts`, `test/audit-trail.test.ts`,
+`test/operator-layer.test.ts`). An operator is not a tenant user and is invisible
+to a tenant it has never touched. Support access refuses a blank reason and a
+non-positive TTL. An expired or revoked grant cannot record an action. The audit
+log refuses UPDATE and DELETE even from its owner. A tenant reads its own trail
+and only its own — suspended or not.
+
+What is next: SPEC.md feature 6, the tenant-scoped `projects` CRUD surface, and
+then feature 3's remaining half — session-token resolution as a Fastify plugin. — operator identity,
 time-boxed support grants with a required reason, and an append-only audit
 table a tenant can read for itself.
 

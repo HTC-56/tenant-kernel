@@ -131,6 +131,6 @@ your own section, read it, build that and nothing else.
   camelCase `Date` fields, and a revoked grant survives as history with a
   non-null `revokedAt`. Spec: §D7. Gate: typecheck + test + scrub.
 
-- [ ] **§D8** Close Phase D: append a README operator-access section and a
+- [x] **§D8** Close Phase D: append a README operator-access section and a
   STATUS.md Phase D section, flip the ROADMAP.md row 5 and add one reservation.
   Spec: §D8. Gate: `bash verify.sh` green first.

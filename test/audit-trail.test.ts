@@ -37,6 +37,9 @@ beforeAll(async () => {
   // committing `withOperator` block, so both rows land together.
   await withOperator(engine, { operatorId: opal }, async (tx) => {
     await grantSupportAccess(tx, { tenantId: acme, reason: 'ticket 12', ttlMinutes: 30 })
+  })
+  // Separate transaction so the audit row gets a later timestamp.
+  await withOperator(engine, { operatorId: opal }, async (tx) => {
     await logOperatorAction(tx, acme, 'project.read', { count: 1 })
   })
 })

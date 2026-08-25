@@ -9,7 +9,7 @@ are the one permitted exception to append-only docs.
 | 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6; grants-based coverage check (`test/rls-grants.test.ts`) landed in B |
 | 3 | The context seam (withTenant, SET LOCAL) | SHIPPED | B, C | `withTenant()`, `withOperator()` (carrying an `app.operator_id` identity since D) and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
 | 4 | Tenant lifecycle + entitlements | SHIPPED | B, C | provision, invite/accept, role change and suspend/resume ship in C; seat cap, last-owner and feature toggles are enforced by triggers and policies |
-| 5 | Audited operator access | PARTIAL | D | operators, reason-and-TTL support grants and the append-only audit table ship in D; §D8 flips this to SHIPPED once the proof suite lands |
+| 5 | Audited operator access | SHIPPED | D | operator identity, reason-and-TTL support grants and an append-only audit table a tenant can read for itself |
 | 6 | Tenant-scoped surface (projects CRUD) | NOT BUILT | — | |
 | 7 | Ops surface (/healthz, /metrics, ledger, auth) | NOT BUILT | — | |
 | 8 | Operator console | NOT BUILT | — | |
@@ -55,3 +55,10 @@ planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
   lane bound the mechanism to `projects`, the one tenant-scoped resource the
   spec names. Flags are default-on; only an explicit jsonb `false` disables
   one. Home: `sql/0003_lifecycle.sql`.
+- **The operator lane is opt-in at the SQL layer (Phase D).** Publishing
+  `app.operator_id` is what makes `set_tenant_state` demand a live support
+  grant and write an audit row; with no operator published the door behaves
+  exactly as Phase C shipped it, which is what a migration and a test fixture
+  are. Making an operator identity mandatory belongs to the phase that puts an
+  authenticated operator API in front of these functions. Home:
+  `sql/0004_operator.sql`.
