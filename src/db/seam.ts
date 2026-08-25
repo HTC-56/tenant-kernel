@@ -96,3 +96,22 @@ export async function withTenant<T>(
     return fn(tx)
   })
 }
+
+/**
+ * The other door: one transaction with NO tenant context and NO drop to
+ * `app_user`, for the operations that are cross-tenant by definition —
+ * provisioning a tenant, suspending one, resuming one.
+ *
+ * It lives here rather than in a lifecycle module on purpose. `withTenant` is
+ * only meaningfully "the only door" if the privileged path is a door too:
+ * one named, greppable function, so test/seam-only.test.ts still finds every
+ * place a transaction can be opened. The privilege is the connecting role's,
+ * which is why SPEC.md feature 5 puts operator identity, a required reason,
+ * a TTL and an audit row in front of this in a later phase.
+ */
+export async function withOperator<T>(
+  engine: Engine,
+  fn: (tx: Queryable) => Promise<T>,
+): Promise<T> {
+  return engine.transaction(fn)
+}
