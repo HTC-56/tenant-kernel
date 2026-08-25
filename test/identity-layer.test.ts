@@ -108,30 +108,18 @@ describe('invites', () => {
   })
 
   it("as 'member' createInvite is rejected by RLS", async () => {
-    // Bill is an 'owner' of bob's tenant — give him 'member' role instead
-    // to test the admin-gated policy on invites.
-    await engine.query(
-      'UPDATE memberships SET role = $1 WHERE tenant_id = $2 AND user_id = $3',
-      ['member', bob, bill],
-    )
-
-    try {
-      await expect(
-        asContext(
-          engine,
-          { tenantId: bob, userId: bill, role: 'member' },
-          async (tx) => {
-            await createInvite(tx, 'nobody@example.com', 'member', 'tok-x', new Date('2099-01-01'))
-          },
-        ),
-      ).rejects.toThrow(/row-level security/i)
-    } finally {
-      // Restore bill's role for other tests.
-      await engine.query(
-        'UPDATE memberships SET role = $1 WHERE tenant_id = $2 AND user_id = $3',
-        ['owner', bob, bill],
-      )
-    }
+    // The invites policy reads `app.role`, the setting the seam publishes — not
+    // the membership row. So acting as a member is simply a matter of
+    // publishing that role; the fixture stays untouched.
+    await expect(
+      asContext(
+        engine,
+        { tenantId: bob, userId: bill, role: 'member' },
+        async (tx) => {
+          await createInvite(tx, 'nobody@example.com', 'member', 'tok-x', new Date('2099-01-01'))
+        },
+      ),
+    ).rejects.toThrow(/row-level security/i)
   })
 
   it('two createInvite calls for the same email in one block reject', async () => {
