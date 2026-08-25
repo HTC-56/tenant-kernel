@@ -94,7 +94,7 @@ that and nothing else.
   owner, then redeem an invite into it from another tenant's transaction.
   Spec: §C7. Gate: typecheck + test + scrub.
 
-- [ ] **§C8** Write `test/function-grants.test.ts`: no SECURITY DEFINER function
+- [x] **§C8** Write `test/function-grants.test.ts`: no SECURITY DEFINER function
   is executable by PUBLIC; only `accept_invite` reaches `app_user`. Mirror
   `test/rls-grants.test.ts`. Spec: §C8. Gate: typecheck + test + scrub.
 

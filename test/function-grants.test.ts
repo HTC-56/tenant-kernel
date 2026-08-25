@@ -51,18 +51,18 @@ describe('function grants — no SECURITY DEFINER function is executable by PUBL
 
     // Every SECURITY DEFINER function has PUBLIC execute = false
     for (const f of funcs) {
-      expect(f.publicExecute, `${f.signature} PUBLIC execute`).toBe(false)
+      expect(f.publicexecute, `${f.signature} PUBLIC execute`).toBe(false)
     }
 
     // accept_invite is the one function app_user may execute
     const acceptInvite = funcs.find((f) => f.signature.startsWith('accept_invite'))
-    expect(acceptInvite?.appUserExecute, `${acceptInvite?.signature} app_user execute`).toBe(true)
+    expect(acceptInvite?.appuserexecute, `${acceptInvite?.signature} app_user execute`).toBe(true)
 
     // Provisioning and suspending are operator-only
     const provisionTenant = funcs.find((f) => f.signature.startsWith('provision_tenant'))
-    expect(provisionTenant?.appUserExecute, `${provisionTenant?.signature} app_user execute`).toBe(false)
+    expect(provisionTenant?.appuserexecute, `${provisionTenant?.signature} app_user execute`).toBe(false)
 
     const setTenantState = funcs.find((f) => f.signature.startsWith('set_tenant_state'))
-    expect(setTenantState?.appUserExecute, `${setTenantState?.signature} app_user execute`).toBe(false)
+    expect(setTenantState?.appuserexecute, `${setTenantState?.signature} app_user execute`).toBe(false)
   })
 })
