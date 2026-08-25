@@ -16,3 +16,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-24T18:23:36	loop	qwen	commit	106	17242	44	11	829	- [ ] **§B8** Close Phase B: append a README section on identity and roles, a
 2026-08-25T00:20:23	plan	claude	commit	75	203829	39	0	819	plan next phase
 2026-08-25T00:25:31	loop	qwen	commit	34	7673	13	2	228	- [ ] **§C3** Write `test/seat-cap.test.ts`: five seats fill, the sixth rejects
+2026-08-25T01:11:05	loop	qwen	max-turns	273	54048	108	20	2734	- [ ] **§C4** Write `test/last-owner.test.ts`: demoting or removing a tenant's
