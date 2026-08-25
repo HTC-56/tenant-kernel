@@ -49,6 +49,16 @@ Membership and invite writes require `app.role` of `owner` or `admin`.
 Entitlements are read-only to tenants. See `sql/0002_identity.sql` for the
 schema and `test/identity-rls.test.ts` for the role-gated policy proofs.
 
+## Tenant lifecycle
+
+Tenants are created by `provision_tenant()` and revoked by `set_tenant_state()`,
+both SECURITY DEFINER functions because each acts on a tenant the caller is not
+scoped to; only `accept_invite` is reachable by `app_user`. A suspended tenant
+goes dark on every tenant-scoped table while its own `tenants` row stays
+readable. Seat-cap and last-owner rules are enforced by triggers. Feature
+toggles are default-on, disabled by an explicit jsonb `false`. See
+`sql/0003_lifecycle.sql` and `test/suspension.test.ts`.
+
 ## Status
 
 v1 is in progress. See [ROADMAP.md](ROADMAP.md).

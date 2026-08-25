@@ -32,5 +32,15 @@ drops to `app_user` and publishes all three settings. A tenant sees only its
 own people. Membership and invite writes need an `admin` or `owner` role. A
 table granted to `app_user` without RLS now fails the build.
 
-What is next: tenant lifecycle (provision, invite/accept, role change,
-suspend/resume) and seat-cap enforcement.
+What is next: audited operator access (SPEC.md feature 5) — operator identity,
+time-boxed support grants with a required reason, and an append-only audit
+table a tenant can read for itself.
+
+## Phase C — tenant lifecycle
+
+Phase C shipped `sql/0003_lifecycle.sql`, `src/db/lifecycle.ts`, `withOperator()`
+in `src/db/seam.ts`, and six new test files. The seat cap refuses the seat past
+the cap, a tenant cannot be left without an owner, a suspended tenant sees none
+of its own data but still sees why, a switched-off feature stops new writes
+without hiding old rows, and no SECURITY DEFINER function is executable by
+PUBLIC.

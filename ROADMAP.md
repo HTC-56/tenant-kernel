@@ -7,8 +7,8 @@ are the one permitted exception to append-only docs.
 |---|---|---|---|---|
 | 1 | Tenancy core on Postgres, plain SQL | SHIPPED | A, B | tenants + projects in A; users, memberships, invites and entitlement flags in B |
 | 2 | RLS enforcement layer + leak-test suite | SHIPPED | A | centerpiece — refusal proof green on PGlite; catalog coverage check is §A6; grants-based coverage check (`test/rls-grants.test.ts`) landed in B |
-| 3 | The context seam (withTenant, SET LOCAL) | PARTIAL | B, C | `withTenant()`, `withOperator()` and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
-| 4 | Tenant lifecycle + entitlements | PARTIAL | B, C | role-gated policies proven in B; `sql/0003_lifecycle.sql` and `src/db/lifecycle.ts` committed in C — its tests prove the seat cap, the last-owner rule, suspension and feature toggles |
+| 3 | The context seam (withTenant, SET LOCAL) | SHIPPED | B, C | `withTenant()`, `withOperator()` and `test/seam-only.test.ts` are proven; session-token → user → active-tenant resolution and the Fastify plugin remain |
+| 4 | Tenant lifecycle + entitlements | SHIPPED | B, C | provision, invite/accept, role change and suspend/resume ship in C; seat cap, last-owner and feature toggles are enforced by triggers and policies |
 | 5 | Audited operator access | NOT BUILT | — | |
 | 6 | Tenant-scoped surface (projects CRUD) | NOT BUILT | — | |
 | 7 | Ops surface (/healthz, /metrics, ledger, auth) | NOT BUILT | — | |
@@ -45,3 +45,13 @@ planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
   ships with no trigger enforcing it, because the operator write path that would
   set it does not exist yet; the lifecycle phase enforces it. Home:
   `TASK_PHASE_B.md` §B1.
+- **Operator doors are privileged-connection-only (Phase C).** `provision_tenant`
+  and `set_tenant_state` have EXECUTE revoked from PUBLIC and are not granted to
+  `app_user`, and `withOperator()` runs as the connecting role. Operator
+  identity, the reason-and-TTL grant and the audit row are SPEC.md feature 5's
+  phase. Home: `TASK_PHASE_C.md` §C1.
+- **`projects` is the first feature-flagged resource (Phase C).** SPEC.md asks
+  for feature toggles enforced by policies but names no flag, so the planning
+  lane bound the mechanism to `projects`, the one tenant-scoped resource the
+  spec names. Flags are default-on; only an explicit jsonb `false` disables
+  one. Home: `sql/0003_lifecycle.sql`.

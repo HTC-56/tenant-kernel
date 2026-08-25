@@ -98,6 +98,6 @@ that and nothing else.
   is executable by PUBLIC; only `accept_invite` reaches `app_user`. Mirror
   `test/rls-grants.test.ts`. Spec: §C8. Gate: typecheck + test + scrub.
 
-- [ ] **§C9** Close Phase C: append a README lifecycle section and a STATUS.md
+- [x] **§C9** Close Phase C: append a README lifecycle section and a STATUS.md
   Phase C section, flip the ROADMAP.md rows and add two reservations.
   Spec: §C9. Gate: `bash verify.sh` green first.
