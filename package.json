@@ -11,15 +11,21 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "serve": "node src/index.ts",
+    "mint-session": "node scripts/mint-session.ts"
   },
   "dependencies": {
-    "postgres": "^3.4.5"
+    "fastify": "^5.12.1",
+    "postgres": "^3.4.5",
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.2.17",
     "@types/node": "^22.10.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
-  }
+  },
+  "packageManager": "pnpm@9.15.0"
 }

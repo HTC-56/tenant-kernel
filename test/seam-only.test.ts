@@ -36,9 +36,9 @@ async function grepSrc(needle: string): Promise<string[]> {
 }
 
 describe('source-text allowlists', () => {
-  it('openEngine( appears only in src/db/engine.ts', async () => {
+  it('openEngine( appears only in engine.ts and the composition root', async () => {
     const offenders = await grepSrc('openEngine(')
-    expect(offenders.sort()).toEqual(['db/engine.ts'])
+    expect(offenders.sort()).toEqual(['db/engine.ts', 'index.ts'])
   })
 
   it('.transaction( appears only in engine, migrate, and seam', async () => {
