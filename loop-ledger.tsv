@@ -19,3 +19,5 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-25T01:11:05	loop	qwen	max-turns	273	54048	108	20	2734	- [ ] **§C4** Write `test/last-owner.test.ts`: demoting or removing a tenant's
 2026-08-25T01:27:54	loop	qwen	commit	304	54963	119	24	1009	- [ ] **§C8** Write `test/function-grants.test.ts`: no SECURITY DEFINER function
 2026-08-25T01:34:52	loop	qwen	commit	103	14202	39	11	417	- [ ] **§C9** Close Phase C: append a README lifecycle section and a STATUS.md
+2026-08-25T01:56:18	plan	claude	commit	65	140311	35	8	695	plan next phase
+2026-08-25T01:59:36	loop	qwen	commit	36	4757	14	2	113	- [ ] **§D3** Write `test/operator-identity.test.ts`: an operator holds no
