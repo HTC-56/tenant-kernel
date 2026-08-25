@@ -123,7 +123,7 @@ your own section, read it, build that and nothing else.
   `audit_log` refuse even for the table owner, `app_user` cannot insert, and a
   tenant delete still cascades. Spec: §D5. Gate: typecheck + test + scrub.
 
-- [ ] **§D6** Write `test/audit-trail.test.ts`: a tenant reads its own trail
+- [x] **§D6** Write `test/audit-trail.test.ts`: a tenant reads its own trail
   newest-first with the grant's reason, sees none of another's, and still reads
   it while suspended. Spec: §D6. Gate: typecheck + test + scrub.
 
